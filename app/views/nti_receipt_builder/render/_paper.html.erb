@@ -1,0 +1,12 @@
+<div class="nrb-receipt-paper-render" style="<%= paper_style(receipt_template, render_result) %>">
+  <% render_result.elements.each do |presenter| %>
+    <% case presenter.type %>
+    <% when 'variable' %>
+      <%= render 'nti_receipt_builder/render/variable_element', presenter: presenter %>
+    <% when 'text' %>
+      <%= render 'nti_receipt_builder/render/text_element', presenter: presenter %>
+    <% when 'order_lines' %>
+      <%= render 'nti_receipt_builder/render/order_lines_element', presenter: presenter %>
+    <% end %>
+  <% end %>
+</div>

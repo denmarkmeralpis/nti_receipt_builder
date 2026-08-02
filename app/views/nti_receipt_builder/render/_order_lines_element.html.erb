@@ -1,0 +1,36 @@
+<div class="nrb-receipt-element nrb-receipt-order-lines"
+    style="position: absolute; left: <%= presenter.x_mm %>mm; top: <%= presenter.y_mm %>mm; width: <%= presenter.width_mm %>mm; z-index: <%= presenter.z_index %>; font-size: <%= presenter.font_size_pt %>pt;">
+  <table class="nrb-receipt-order-lines-table" style="line-height: <%= presenter.text_line_height_mm %>mm;">
+    <colgroup>
+      <% presenter.columns.each do |column| %>
+        <col style="width: <%= presenter.column_width_pct(column) %>%;">
+      <% end %>
+    </colgroup>
+
+    <% if presenter.show_header? %>
+      <thead>
+        <tr class="nrb-receipt-order-lines-header">
+          <% presenter.columns.each do |column| %>
+            <th style="text-align: <%= column['align'] %>; padding-bottom: <%= presenter.row_spacing_mm %>mm;"><%= column['label'] %></th>
+          <% end %>
+        </tr>
+      </thead>
+    <% end %>
+
+    <tbody>
+      <% if presenter.empty? %>
+        <tr class="nrb-receipt-order-lines-empty">
+          <td colspan="<%= [presenter.columns.size, 1].max %>" class="text-secondary" style="padding-bottom: <%= presenter.row_spacing_mm %>mm;">No line items</td>
+        </tr>
+      <% else %>
+        <% presenter.rows.each do |row| %>
+          <tr>
+            <% presenter.columns.each do |column| %>
+              <td style="text-align: <%= column['align'] %>; padding-bottom: <%= presenter.row_spacing_mm %>mm;"><%= row[column['key']] %></td>
+            <% end %>
+          </tr>
+        <% end %>
+      <% end %>
+    </tbody>
+  </table>
+</div>

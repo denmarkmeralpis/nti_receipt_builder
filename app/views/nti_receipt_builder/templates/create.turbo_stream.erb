@@ -1,0 +1,3 @@
+<% if @errors.any? %>
+  <%= turbo_stream.update 'errors', partial: 'nti_receipt_builder/templates/errors', locals: { errors: @errors } %>
+<% end %>

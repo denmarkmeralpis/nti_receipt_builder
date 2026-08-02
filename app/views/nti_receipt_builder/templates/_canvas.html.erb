@@ -1,0 +1,33 @@
+<div id="receipt-canvas-panel" class="nrb-receipt-panel nrb-receipt-panel--canvas"
+    data-controller="nrb-canvas"
+    data-nrb-canvas-width-mm-value="<%= @receipt_template.paper_width_mm %>"
+    data-nrb-canvas-height-mm-value="<%= @receipt_template.paper_height_mm %>"
+    data-nrb-canvas-height-mode-value="<%= @receipt_template.height_mode %>"
+    data-nrb-canvas-margin-top-mm-value="<%= @receipt_template.margin_top_mm %>"
+    data-nrb-canvas-margin-right-mm-value="<%= @receipt_template.margin_right_mm %>"
+    data-nrb-canvas-margin-bottom-mm-value="<%= @receipt_template.margin_bottom_mm %>"
+    data-nrb-canvas-margin-left-mm-value="<%= @receipt_template.margin_left_mm %>"
+    data-nrb-canvas-grid-mm-value="2"
+    data-nrb-canvas-variable-labels-value="<%= NtiReceiptBuilder.variables_class.labels.to_json %>">
+  <div class="nrb-receipt-toolbar">
+    <h3 class="card-title mb-0">Canvas</h3>
+    <div class="nrb-receipt-zoom">
+      <span class="material-symbols-outlined">zoom_out</span>
+      <input type="range" min="0.5" max="2" step="0.1" value="1"
+          data-nrb-canvas-target="zoomRange"
+          data-action="input->nrb-canvas#zoomChanged">
+      <span class="material-symbols-outlined">zoom_in</span>
+      <span class="nrb-receipt-zoom-label" data-nrb-canvas-target="zoomLabel">100%</span>
+    </div>
+  </div>
+
+  <div class="nrb-receipt-viewport" data-nrb-canvas-target="viewport"
+      data-action="pointerdown->nrb-canvas#paperClicked">
+    <div class="nrb-receipt-paper" data-nrb-canvas-target="paper">
+      <div class="nrb-receipt-paper-margins" data-nrb-canvas-target="marginGuides"></div>
+      <div class="nrb-receipt-paper-elements" data-nrb-canvas-target="elementsLayer"></div>
+    </div>
+  </div>
+
+  <p class="text-secondary nrb-receipt-hint" data-nrb-builder-target="elementCount">0 elements</p>
+</div>

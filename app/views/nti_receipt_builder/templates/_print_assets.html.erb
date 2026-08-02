@@ -1,0 +1,15 @@
+<%#
+  Assets for the standalone print document. Both helpers are guarded so a host without
+  propshaft or importmap still renders a correct receipt — it just loses auto-print.
+
+  To control this precisely, shadow the partial from your own controller's view directory,
+  e.g. app/views/partner/receipt_templates/_print_assets.html.erb. Host prefixes are searched
+  before the gem's, so your copy wins with no configuration.
+%>
+<% sheets = Array(NtiReceiptBuilder.config.print_stylesheet).compact %>
+<% if sheets.any? && respond_to?(:stylesheet_link_tag) %>
+  <%= stylesheet_link_tag(*sheets) %>
+<% end %>
+<% if respond_to?(:javascript_importmap_tags) %>
+  <%= javascript_importmap_tags %>
+<% end %>

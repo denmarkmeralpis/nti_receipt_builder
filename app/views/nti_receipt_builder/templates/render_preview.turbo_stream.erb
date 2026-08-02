@@ -1,0 +1,26 @@
+<%= turbo_stream.open_modal size: 'modal-lg' do %>
+  <div class="modal-header">
+    <h1 class="modal-title">Live Preview</h1>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+  </div>
+  <div class="modal-body nrb-receipt-preview-modal">
+    <p class="text-secondary nrb-receipt-hint">
+      Rendered with sample data from your unsaved changes &mdash; nothing has been saved yet.
+    </p>
+
+    <% if @draft_errors.present? %>
+      <%= render 'nti_receipt_builder/templates/errors', errors: @draft_errors %>
+    <% else %>
+      <% if @render_result.overflow? %>
+        <%= render 'nti_receipt_builder/render/overflow_banner' %>
+      <% end %>
+
+      <div class="nrb-receipt-preview-frame">
+        <%= render 'nti_receipt_builder/render/paper', receipt_template: @draft, render_result: @render_result %>
+      </div>
+    <% end %>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+  </div>
+<% end %>

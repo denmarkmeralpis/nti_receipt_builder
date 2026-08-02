@@ -1,0 +1,7 @@
+<% if @errors.empty? %>
+  <%= turbo_stream.toast('Receipt template saved!', type: :success) %>
+  <%= turbo_stream.replace 'lock_version_field', partial: 'nti_receipt_builder/templates/lock_version_field', locals: { receipt_template: @receipt_template } %>
+  <%= turbo_stream.update 'errors', '' %>
+<% else %>
+  <%= turbo_stream.update 'errors', partial: 'nti_receipt_builder/templates/errors', locals: { errors: @errors } %>
+<% end %>

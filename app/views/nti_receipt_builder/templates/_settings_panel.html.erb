@@ -1,0 +1,130 @@
+<div class="nrb-receipt-panel nrb-receipt-panel--settings">
+  <h3 class="card-title">Settings</h3>
+
+  <div class="form-group mb-3">
+    <%= f.label :name, 'Template Name', class: 'form-label' %>
+    <%= f.text_field :name, class: 'form-control' %>
+  </div>
+
+  <div class="form-group mb-3">
+    <%= f.label :paper_size_key, 'Paper Size', class: 'form-label' %>
+    <%= f.select :paper_size_key,
+        NtiReceiptBuilder::Template::PAPER_PRESETS.map { |key, preset| [preset[:label], key] },
+        {},
+        class: 'form-select',
+        data: {
+          nrb_builder_target: 'paperSizeSelect',
+          action: 'change->nrb-builder#paperPresetChanged'
+        } %>
+  </div>
+
+  <div class="row g-3">
+    <div class="col">
+      <div class="form-group mb-3">
+        <%= f.label :paper_width_mm, 'Width (mm)', class: 'form-label' %>
+        <%= f.number_field :paper_width_mm, step: 0.1,
+            min: NtiReceiptBuilder::Template::MIN_PAPER_DIMENSION_MM,
+            max: NtiReceiptBuilder::Template::MAX_PAPER_DIMENSION_MM,
+            class: 'form-control',
+            data: {
+              nrb_builder_target: 'widthInput',
+              action: 'input->nrb-builder#settingsChanged'
+            } %>
+      </div>
+    </div>
+    <div class="col">
+      <div class="form-group mb-3">
+        <%= f.label :paper_height_mm, 'Height (mm)', class: 'form-label' %>
+        <%= f.number_field :paper_height_mm, step: 0.1,
+            min: NtiReceiptBuilder::Template::MIN_PAPER_DIMENSION_MM,
+            max: NtiReceiptBuilder::Template::MAX_PAPER_DIMENSION_MM,
+            class: 'form-control',
+            data: {
+              nrb_builder_target: 'heightInput',
+              action: 'input->nrb-builder#settingsChanged'
+            } %>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-3">
+    <div class="col">
+      <div class="form-group mb-3">
+        <%= f.label :orientation, 'Orientation', class: 'form-label' %>
+        <%= f.select :orientation,
+            NtiReceiptBuilder::Template::ORIENTATIONS.map { |value| [value.titleize, value] },
+            {},
+            class: 'form-select',
+            data: {
+              nrb_builder_target: 'orientationSelect',
+              action: 'change->nrb-builder#settingsChanged'
+            } %>
+      </div>
+    </div>
+    <div class="col">
+      <div class="form-group mb-3">
+        <%= f.label :height_mode, 'Height Mode', class: 'form-label' %>
+        <%= f.select :height_mode,
+            [['Fixed Height', 'fixed'], ['Grows With Content', 'content']],
+            {},
+            class: 'form-select',
+            data: {
+              nrb_builder_target: 'heightModeSelect',
+              action: 'change->nrb-builder#settingsChanged'
+            } %>
+      </div>
+    </div>
+  </div>
+
+  <label class="form-label">Margins (mm)</label>
+  <div class="row g-3">
+    <div class="col-6">
+      <div class="form-group mb-3">
+        <%= f.label :margin_top_mm, 'Top', class: 'form-label' %>
+        <%= f.number_field :margin_top_mm, step: 0.1,
+            min: NtiReceiptBuilder::Template::MIN_MARGIN_MM, max: NtiReceiptBuilder::Template::MAX_MARGIN_MM,
+            class: 'form-control',
+            data: {
+              nrb_builder_target: 'marginTopInput',
+              action: 'input->nrb-builder#settingsChanged'
+            } %>
+      </div>
+    </div>
+    <div class="col-6">
+      <div class="form-group mb-3">
+        <%= f.label :margin_right_mm, 'Right', class: 'form-label' %>
+        <%= f.number_field :margin_right_mm, step: 0.1,
+            min: NtiReceiptBuilder::Template::MIN_MARGIN_MM, max: NtiReceiptBuilder::Template::MAX_MARGIN_MM,
+            class: 'form-control',
+            data: {
+              nrb_builder_target: 'marginRightInput',
+              action: 'input->nrb-builder#settingsChanged'
+            } %>
+      </div>
+    </div>
+    <div class="col-6">
+      <div class="form-group mb-3">
+        <%= f.label :margin_bottom_mm, 'Bottom', class: 'form-label' %>
+        <%= f.number_field :margin_bottom_mm, step: 0.1,
+            min: NtiReceiptBuilder::Template::MIN_MARGIN_MM, max: NtiReceiptBuilder::Template::MAX_MARGIN_MM,
+            class: 'form-control',
+            data: {
+              nrb_builder_target: 'marginBottomInput',
+              action: 'input->nrb-builder#settingsChanged'
+            } %>
+      </div>
+    </div>
+    <div class="col-6">
+      <div class="form-group mb-3">
+        <%= f.label :margin_left_mm, 'Left', class: 'form-label' %>
+        <%= f.number_field :margin_left_mm, step: 0.1,
+            min: NtiReceiptBuilder::Template::MIN_MARGIN_MM, max: NtiReceiptBuilder::Template::MAX_MARGIN_MM,
+            class: 'form-control',
+            data: {
+              nrb_builder_target: 'marginLeftInput',
+              action: 'input->nrb-builder#settingsChanged'
+            } %>
+      </div>
+    </div>
+  </div>
+</div>

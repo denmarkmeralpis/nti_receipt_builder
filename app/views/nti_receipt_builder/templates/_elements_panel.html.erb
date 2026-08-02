@@ -1,0 +1,49 @@
+<div class="nrb-receipt-panel nrb-receipt-panel--elements">
+  <h3 class="card-title">Elements</h3>
+  <p class="text-secondary nrb-receipt-hint">
+    Drag an element onto the receipt, or click to drop it in the middle.
+  </p>
+
+  <div class="nrb-receipt-palette-group">
+    <span class="nrb-receipt-palette-label">Variables</span>
+    <div class="nrb-receipt-palette">
+      <% NtiReceiptBuilder.variables_class.scalar_keys.each do |key| %>
+        <button type="button"
+            class="nrb-receipt-palette-btn"
+            data-nrb-builder-type-param="variable"
+            data-nrb-builder-key-param="<%= key %>"
+            data-action="pointerdown->nrb-builder#startPaletteDrag">
+          <span class="material-symbols-outlined">data_object</span>
+          <%= NtiReceiptBuilder.variables_class.labels[key] %>
+        </button>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="nrb-receipt-palette-group">
+    <span class="nrb-receipt-palette-label">Blocks</span>
+    <div class="nrb-receipt-palette">
+      <button type="button"
+          class="nrb-receipt-palette-btn"
+          data-nrb-builder-type-param="text"
+          data-action="pointerdown->nrb-builder#startPaletteDrag">
+        <span class="material-symbols-outlined">text_fields</span>
+        Custom Text
+      </button>
+      <% if (collection = NtiReceiptBuilder.variables_class.collection_definition) %>
+        <button type="button"
+            class="nrb-receipt-palette-btn"
+            data-nrb-builder-type-param="order_lines"
+            data-action="pointerdown->nrb-builder#startPaletteDrag">
+          <span class="material-symbols-outlined">receipt_long</span>
+          <%= collection.label %>
+        </button>
+      <% end %>
+    </div>
+  </div>
+
+  <p class="text-secondary nrb-receipt-hint">
+    Select an element on the canvas to edit it, or press
+    <code>Delete</code> to remove it.
+  </p>
+</div>

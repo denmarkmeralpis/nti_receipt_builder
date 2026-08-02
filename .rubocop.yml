@@ -1,0 +1,52 @@
+AllCops:
+  TargetRubyVersion: 3.4
+  NewCops: enable
+  SuggestExtensions: false
+  Exclude:
+    # ERB templates copied into the host — not valid Ruby until rendered.
+    - 'lib/generators/**/templates/**/*'
+    - 'spec/dummy/db/schema.rb'
+    - 'vendor/**/*'
+
+Style/StringLiterals:
+  EnforcedStyle: single_quotes
+
+Style/StringLiteralsInInterpolation:
+  EnforcedStyle: single_quotes
+
+Style/Documentation:
+  Enabled: false
+
+Metrics/BlockLength:
+  Enabled: false
+
+Metrics/ClassLength:
+  Enabled: false
+
+# The controller concern legitimately holds nine actions plus their hooks.
+Metrics/ModuleLength:
+  Max: 130
+
+Metrics/MethodLength:
+  Max: 25
+
+Metrics/AbcSize:
+  Max: 25
+
+Metrics/ParameterLists:
+  Max: 10
+  CountKeywordArgs: false
+
+# Specs declare bare probe classes purely to exercise constant resolution.
+Lint/EmptyClass:
+  Exclude:
+    - 'spec/**/*'
+
+Style/MultilineBlockChain:
+  Enabled: false
+
+Style/AccessorGrouping:
+  Enabled: false
+
+Layout/LineLength:
+  Max: 120

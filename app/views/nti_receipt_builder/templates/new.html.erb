@@ -1,0 +1,115 @@
+<%= content_for :title, 'New Receipt Template' %>
+
+<%= form_with model: @receipt_template, url: url_for(action: :create), scope: :receipt_template do |f| %>
+  <h3 class="card-title">Receipt Template</h3>
+  <div id="errors">
+    <% if @errors.present? %>
+      <%= render 'nti_receipt_builder/templates/errors', errors: @errors %>
+    <% end %>
+  </div>
+
+  <div class="row g-3">
+    <div class="col-md-6">
+      <div class="form-group mb-3">
+        <%= f.label :name, 'Template Name', class: 'form-label' %>
+        <%= f.text_field :name, class: 'form-control', placeholder: 'e.g. Main Branch Receipt' %>
+      </div>
+
+      <div class="form-group mb-3">
+        <%= f.label :paper_size_key, 'Paper Size', class: 'form-label' %>
+        <%= f.select :paper_size_key,
+            NtiReceiptBuilder::Template::PAPER_PRESETS.map { |key, preset| [preset[:label], key] },
+            {},
+            class: 'form-select' %>
+      </div>
+
+      <div class="row g-3">
+        <div class="col">
+          <div class="form-group mb-3">
+            <%= f.label :paper_width_mm, 'Width (mm)', class: 'form-label' %>
+            <%= f.number_field :paper_width_mm, step: 0.1,
+                min: NtiReceiptBuilder::Template::MIN_PAPER_DIMENSION_MM,
+                max: NtiReceiptBuilder::Template::MAX_PAPER_DIMENSION_MM,
+                class: 'form-control' %>
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group mb-3">
+            <%= f.label :paper_height_mm, 'Height (mm)', class: 'form-label' %>
+            <%= f.number_field :paper_height_mm, step: 0.1,
+                min: NtiReceiptBuilder::Template::MIN_PAPER_DIMENSION_MM,
+                max: NtiReceiptBuilder::Template::MAX_PAPER_DIMENSION_MM,
+                class: 'form-control' %>
+          </div>
+        </div>
+      </div>
+
+      <div class="row g-3">
+        <div class="col">
+          <div class="form-group mb-3">
+            <%= f.label :orientation, 'Orientation', class: 'form-label' %>
+            <%= f.select :orientation,
+                NtiReceiptBuilder::Template::ORIENTATIONS.map { |value| [value.titleize, value] },
+                {},
+                class: 'form-select' %>
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group mb-3">
+            <%= f.label :height_mode, 'Height Mode', class: 'form-label' %>
+            <%= f.select :height_mode,
+                [['Fixed Height', 'fixed'], ['Grows With Content', 'content']],
+                {},
+                class: 'form-select' %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <label class="form-label">Margins (mm)</label>
+      <div class="row g-3">
+        <div class="col-6">
+          <div class="form-group mb-3">
+            <%= f.label :margin_top_mm, 'Top', class: 'form-label' %>
+            <%= f.number_field :margin_top_mm, step: 0.1,
+                min: NtiReceiptBuilder::Template::MIN_MARGIN_MM, max: NtiReceiptBuilder::Template::MAX_MARGIN_MM,
+                class: 'form-control' %>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="form-group mb-3">
+            <%= f.label :margin_right_mm, 'Right', class: 'form-label' %>
+            <%= f.number_field :margin_right_mm, step: 0.1,
+                min: NtiReceiptBuilder::Template::MIN_MARGIN_MM, max: NtiReceiptBuilder::Template::MAX_MARGIN_MM,
+                class: 'form-control' %>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="form-group mb-3">
+            <%= f.label :margin_bottom_mm, 'Bottom', class: 'form-label' %>
+            <%= f.number_field :margin_bottom_mm, step: 0.1,
+                min: NtiReceiptBuilder::Template::MIN_MARGIN_MM, max: NtiReceiptBuilder::Template::MAX_MARGIN_MM,
+                class: 'form-control' %>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="form-group mb-3">
+            <%= f.label :margin_left_mm, 'Left', class: 'form-label' %>
+            <%= f.number_field :margin_left_mm, step: 0.1,
+                min: NtiReceiptBuilder::Template::MIN_MARGIN_MM, max: NtiReceiptBuilder::Template::MAX_MARGIN_MM,
+                class: 'form-control' %>
+          </div>
+        </div>
+      </div>
+      <p class="text-secondary">
+        You'll drag variables, text, and the order-lines block onto the canvas on the next step.
+      </p>
+    </div>
+  </div>
+
+  <div class="d-flex justify-content-end gap-2">
+    <%= link_to 'Cancel', url_for(action: :index), class: 'btn btn-secondary' %>
+    <%= f.submit 'Continue to Layout Builder', class: 'btn btn-primary' %>
+  </div>
+<% end %>

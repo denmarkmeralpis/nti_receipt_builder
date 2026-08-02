@@ -1,0 +1,54 @@
+<% content_for :title, "Edit #{@receipt_template.name}" %>
+<% content_for :cardless, true %>
+
+<%= form_with model: @receipt_template, url: url_for(action: :update, id: @receipt_template.id), method: :patch,
+    scope: :receipt_template,
+    data: {
+      controller: 'nrb-builder',
+      nrb_builder_layout_value: @receipt_template.layout.to_json,
+      nrb_builder_presets_value: NtiReceiptBuilder::Template::PAPER_PRESETS.to_json,
+      nrb_builder_collection_columns_value:
+        (NtiReceiptBuilder.variables_class.collection_definition&.default_columns_config || []).to_json,
+      nrb_builder_nrb_canvas_outlet: '#receipt-canvas-panel',
+      nrb_builder_nrb_properties_outlet: '#receipt-properties-panel',
+      action: 'turbo:submit-start->nrb-builder#serializeLayout ' \
+              'receipt-element:moved->nrb-builder#elementMoved ' \
+              'receipt-element:resized->nrb-builder#elementResized ' \
+              'receipt-element:selected->nrb-builder#elementSelected ' \
+              'receipt-canvas:deselect->nrb-builder#deselect ' \
+              'receipt-properties:changed->nrb-builder#propertiesChanged ' \
+              'receipt-properties:delete-requested->nrb-builder#removeSelected'
+    } do |f| %>
+
+  <div class="nrb-receipt-topbar">
+    <div>
+      <span class="nrb-receipt-topbar-name"><%= @receipt_template.name %></span>
+      <span class="text-secondary"><%= @receipt_template.paper_width_mm %>mm × <%= @receipt_template.paper_height_mm %>mm</span>
+    </div>
+    <div class="d-flex justify-content-end gap-2">
+      <%= f.button 'Live Preview', type: 'submit', class: 'btn btn-outline-secondary',
+          formaction: url_for(action: :render_preview, id: @receipt_template.id), formmethod: :post %>
+      <%= link_to url_for(action: :preview, id: @receipt_template.id),
+          class: 'btn btn-outline-secondary', target: '_blank', rel: 'noopener' do %>
+        <span class="material-symbols-outlined pe-1">visibility</span>Preview
+      <% end %>
+      <%= link_to 'Back to Templates', url_for(action: :index), class: 'btn btn-secondary' %>
+      <%= f.submit 'Save', class: 'btn btn-primary' %>
+    </div>
+  </div>
+
+  <div id="errors"></div>
+
+  <%= f.hidden_field :layout, value: @receipt_template.layout.to_json,
+      data: { nrb_builder_target: 'layoutField' } %>
+  <span id="lock_version_field"><%= render 'nti_receipt_builder/templates/lock_version_field', receipt_template: @receipt_template %></span>
+
+  <div class="nrb-receipt-builder">
+    <div class="nrb-receipt-builder-side">
+      <%= render 'nti_receipt_builder/templates/elements_panel' %>
+      <%= render 'nti_receipt_builder/templates/settings_panel', f: f %>
+    </div>
+    <%= render 'nti_receipt_builder/templates/canvas' %>
+    <%= render 'nti_receipt_builder/templates/properties_panel' %>
+  </div>
+<% end %>

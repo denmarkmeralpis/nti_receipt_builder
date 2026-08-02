@@ -1,0 +1,9 @@
+test:
+  adapter: postgresql
+  encoding: unicode
+  pool: 5
+  host: <%= ENV.fetch('DB_HOST', '127.0.0.1') %>
+  port: <%= ENV.fetch('DB_PORT', 5432) %>
+  username: <%= ENV.fetch('DB_USER', 'root') %>
+  password: <%= ENV.fetch('DB_PASS', 'root') %>
+  database: <%= ENV.fetch('DB_NAME', 'nti_receipt_builder_test') %>
