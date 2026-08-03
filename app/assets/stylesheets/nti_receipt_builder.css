@@ -192,12 +192,15 @@
   table-layout: fixed;
   border-collapse: collapse;
 }
+/* Cells wrap rather than truncate: a receipt that hides half a product name is worse than one
+   that runs to a second line. `overflow-wrap: break-word` only splits a word that cannot fit its
+   column on its own — an unbroken SKU in a narrow column — so ordinary text still breaks at
+   spaces. Matches `.nrb-receipt-element`, which has wrapped all along. */
 .nrb-receipt-order-lines-table th,
 .nrb-receipt-order-lines-table td {
   padding: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  white-space: normal;
+  overflow-wrap: break-word;
   vertical-align: top;
 }
 .nrb-receipt-order-lines-header th {

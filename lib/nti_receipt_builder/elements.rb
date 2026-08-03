@@ -33,8 +33,11 @@ module NtiReceiptBuilder
     PREFIX_MAX_LENGTH = 50
     SUFFIX_MAX_LENGTH = 50
 
+    # There is deliberately no maximum: the host declares the column vocabulary, and
+    # LayoutValidator rejects unknown and duplicated keys, so that vocabulary is already the
+    # ceiling. A constant here would reject a host whose collection is simply wider than the
+    # gem happened to anticipate.
     MIN_ORDER_LINE_COLUMNS = 1
-    MAX_ORDER_LINE_COLUMNS = 6
     COLUMN_LABEL_MAX_LENGTH = 40
 
     ROW_SPACING_MIN_MM = 0.0

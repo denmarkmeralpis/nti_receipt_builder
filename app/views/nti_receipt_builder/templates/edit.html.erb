@@ -11,7 +11,7 @@
         (NtiReceiptBuilder.variables_class.collection_definition&.default_columns_config || []).to_json,
       nrb_builder_nrb_canvas_outlet: '#receipt-canvas-panel',
       nrb_builder_nrb_properties_outlet: '#receipt-properties-panel',
-      action: 'turbo:submit-start->nrb-builder#serializeLayout ' \
+      action: 'formdata->nrb-builder#writeLayoutToFormData ' \
               'receipt-element:moved->nrb-builder#elementMoved ' \
               'receipt-element:resized->nrb-builder#elementResized ' \
               'receipt-element:selected->nrb-builder#elementSelected ' \

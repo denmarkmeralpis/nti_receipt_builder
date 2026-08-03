@@ -81,7 +81,21 @@ RSpec.describe NtiReceiptBuilder::LayoutValidator do
     context 'with no columns at all' do
       let(:layout) { order_lines([]) }
 
-      it { is_expected.to include(a_string_matching(/between 1 and 6/)) }
+      it { is_expected.to include(a_string_matching(/at least 1 order_lines column/)) }
+    end
+
+    # The gem carries no column vocabulary, so it must not cap the count either: the host's
+    # declared columns, with duplicates rejected, are already the ceiling.
+    context 'with every column a wider host declares' do
+      let(:args) { super().merge(variables_class: WideVariables) }
+      let(:layout) do
+        order_lines(WideVariables.collection_definition.default_columns_config)
+      end
+
+      it 'accepts more columns than the gem would have guessed at' do
+        expect(layout.first['config']['columns'].size).to be > 6
+        expect(errors).to be_empty
+      end
     end
   end
 

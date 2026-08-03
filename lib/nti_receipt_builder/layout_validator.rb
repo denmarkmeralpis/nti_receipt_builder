@@ -229,12 +229,12 @@ module NtiReceiptBuilder
       @errors << "#{tag} has an out-of-range font_size_pt"
     end
 
+    # Only a lower bound is checked. Every key must be one of the host's declared collection
+    # columns and duplicates are rejected below, so the column count cannot exceed the host's
+    # own vocabulary — capping it here would reject a legitimately wider host.
     def validate_order_line_columns(columns, tag)
-      valid_count = columns.is_a?(Array) &&
-                    columns.size.between?(Elements::MIN_ORDER_LINE_COLUMNS, Elements::MAX_ORDER_LINE_COLUMNS)
-      unless valid_count
-        @errors << "#{tag} must have between #{Elements::MIN_ORDER_LINE_COLUMNS} and " \
-                   "#{Elements::MAX_ORDER_LINE_COLUMNS} order_lines columns"
+      unless columns.is_a?(Array) && columns.size >= Elements::MIN_ORDER_LINE_COLUMNS
+        @errors << "#{tag} must have at least #{Elements::MIN_ORDER_LINE_COLUMNS} order_lines column"
         return
       end
 

@@ -35,3 +35,20 @@ end
 
 TestReceipt = Struct.new(:customer_name, :store_name, :subtotal, :created_at, :lines,
                          keyword_init: true)
+
+# A host that declares a wider collection than the gem would ever guess at. Exists to hold the
+# validator to the rule that the host's vocabulary — not a constant in the gem — is the ceiling
+# on column count.
+class WideVariables < NtiReceiptBuilder::Variables
+  MAPPINGS = { 'ORDER_LINES' => 'order_lines' }.freeze
+
+  variable 'ORDER_LINES',
+           columns: {
+             'no' => { label: '#' }, 'sku' => { label: 'SKU' },
+             'product_name' => { label: 'Product' }, 'unit_name' => { label: 'Unit' },
+             'category_names' => { label: 'Category' }, 'total_items' => { label: 'Items' },
+             'retail_price' => { label: 'Retail Price' }, 'subtotal' => { label: 'Subtotal' }
+           }
+
+  def order_lines = receipt_object.lines
+end

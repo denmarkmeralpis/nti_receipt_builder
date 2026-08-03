@@ -114,6 +114,19 @@ RSpec.describe 'Receipt templates', type: :request do
       expect(response.body).to include('Customer Name', 'Order Date/Time', 'Order Lines')
     end
 
+    # Turbo builds the request body in the FormSubmission constructor, before turbo:submit-start
+    # is dispatched, so serialising the layout on that event silently sent the layout the page was
+    # rendered with and discarded every edit. `formdata` fires while the body is being assembled.
+    # No browser runs in this suite, so the wiring is what gets asserted.
+    it 'serialises the layout on an event that fires before Turbo snapshots the body' do
+      template = create_template(owner)
+
+      get "/receipt_templates/#{template.id}/edit"
+
+      expect(response.body).to include('formdata-&gt;nrb-builder#writeLayoutToFormData')
+      expect(response.body).not_to include('turbo:submit-start')
+    end
+
     it 'renders the preview page with sample data' do
       template = create_template(owner, layout: [
                                    { 'id' => 'var', 'type' => 'variable',

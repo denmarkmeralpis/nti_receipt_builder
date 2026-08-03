@@ -33,6 +33,19 @@ export default class extends Controller {
     this.paletteDragHandler = null
   }
 
+  // Stimulus calls this on connect and after every assignment to layoutValue — adding, patching,
+  // moving, resizing and deleting all route through one of those, so the hidden field is never
+  // stale.
+  //
+  // Serialising here rather than on submit is deliberate and load-bearing. Turbo builds the
+  // request body in the FormSubmission constructor, which runs BEFORE turbo:submit-start is
+  // dispatched from requestStarted(). A listener on that event writes the field after the body
+  // has already been snapshotted, so every edit was dropped and the server silently re-saved the
+  // layout the page was rendered with.
+  layoutValueChanged() {
+    this.serializeLayout()
+  }
+
   disconnect() {
     this.cancelPaletteDrag()
   }
@@ -264,7 +277,21 @@ export default class extends Controller {
     this.elementCountTarget.textContent = `${count} element${count === 1 ? "" : "s"}`
   }
 
+  // Guarded because layoutValueChanged fires during initialization, before targets connect. The
+  // field is server-rendered with the current layout, so a skipped first call loses nothing.
   serializeLayout() {
+    if (!this.hasLayoutFieldTarget) return
+
     this.layoutFieldTarget.value = JSON.stringify(this.layoutValue)
+  }
+
+  // Last line of defence at submit time, for a layout mutated in place without reassigning
+  // layoutValue. `new FormData(form)` dispatches formdata on the form, so this runs while Turbo
+  // is still assembling the body — early enough to change what is sent, which is exactly what
+  // turbo:submit-start was not.
+  writeLayoutToFormData(event) {
+    if (!this.hasLayoutFieldTarget) return
+
+    event.formData.set(this.layoutFieldTarget.name, JSON.stringify(this.layoutValue))
   }
 }
