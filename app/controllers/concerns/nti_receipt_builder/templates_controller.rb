@@ -84,6 +84,11 @@ module NtiReceiptBuilder
 
       @draft = @receipt_template.dup
       @draft.assign_attributes(form.attributes.except(:lock_version))
+      # A preview is never anyone's default. `dup` copies the flag, so a host enforcing one
+      # default per owner saw the unsaved draft collide with the very record it was copied from,
+      # and Live Preview failed on precisely the templates most likely to be previewed. Clearing
+      # it cannot change the render — nothing in the layout or geometry reads it.
+      @draft.is_default = false
 
       if !form.valid?
         @render_result = nil
