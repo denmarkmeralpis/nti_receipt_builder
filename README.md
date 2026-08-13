@@ -150,7 +150,7 @@ that omits it raises `NotImplementedError` instead of running an unscoped query.
 
 The concern provides `new`, `create`, `edit`, `update`, `destroy`, `preview`,
 `render_preview`, `print` and `set_default`. Define any of them in your controller to take
-over — a method on the including class wins. SalesWiz overrides `destroy`, for instance, to
+over — a method on the including class wins. Rails app overrides `destroy`, for instance, to
 archive rather than delete. The navigation hooks `after_create_path`, `after_destroy_path` and
 `after_set_default_path` are overridable too, and worth overriding if you have named routes.
 
