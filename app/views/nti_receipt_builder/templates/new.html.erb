@@ -1,6 +1,10 @@
 <%= content_for :title, 'New Receipt Template' %>
 
-<%= form_with model: @receipt_template, url: url_for(action: :create), scope: :receipt_template do |f| %>
+<%= form_with model: @receipt_template, url: url_for(action: :create), scope: :receipt_template,
+    data: {
+      controller: 'nrb-builder',
+      nrb_builder_presets_value: NtiReceiptBuilder::Template::PAPER_PRESETS.to_json
+    } do |f| %>
   <h3 class="card-title">Receipt Template</h3>
   <div id="errors">
     <% if @errors.present? %>
@@ -20,7 +24,11 @@
         <%= f.select :paper_size_key,
             NtiReceiptBuilder::Template::PAPER_PRESETS.map { |key, preset| [preset[:label], key] },
             {},
-            class: 'form-select' %>
+            class: 'form-select',
+            data: {
+              nrb_builder_target: 'paperSizeSelect',
+              action: 'change->nrb-builder#paperPresetChanged'
+            } %>
       </div>
 
       <div class="row g-3">
@@ -30,7 +38,11 @@
             <%= f.number_field :paper_width_mm, step: 0.1,
                 min: NtiReceiptBuilder::Template::MIN_PAPER_DIMENSION_MM,
                 max: NtiReceiptBuilder::Template::MAX_PAPER_DIMENSION_MM,
-                class: 'form-control' %>
+                class: 'form-control',
+                data: {
+                  nrb_builder_target: 'widthInput',
+                  action: 'input->nrb-builder#settingsChanged'
+                } %>
           </div>
         </div>
         <div class="col">
@@ -39,7 +51,11 @@
             <%= f.number_field :paper_height_mm, step: 0.1,
                 min: NtiReceiptBuilder::Template::MIN_PAPER_DIMENSION_MM,
                 max: NtiReceiptBuilder::Template::MAX_PAPER_DIMENSION_MM,
-                class: 'form-control' %>
+                class: 'form-control',
+                data: {
+                  nrb_builder_target: 'heightInput',
+                  action: 'input->nrb-builder#settingsChanged'
+                } %>
           </div>
         </div>
       </div>
@@ -51,7 +67,11 @@
             <%= f.select :orientation,
                 NtiReceiptBuilder::Template::ORIENTATIONS.map { |value| [value.titleize, value] },
                 {},
-                class: 'form-select' %>
+                class: 'form-select',
+                data: {
+                  nrb_builder_target: 'orientationSelect',
+                  action: 'change->nrb-builder#settingsChanged'
+                } %>
           </div>
         </div>
         <div class="col">
@@ -60,7 +80,11 @@
             <%= f.select :height_mode,
                 [['Fixed Height', 'fixed'], ['Grows With Content', 'content']],
                 {},
-                class: 'form-select' %>
+                class: 'form-select',
+                data: {
+                  nrb_builder_target: 'heightModeSelect',
+                  action: 'change->nrb-builder#settingsChanged'
+                } %>
           </div>
         </div>
       </div>

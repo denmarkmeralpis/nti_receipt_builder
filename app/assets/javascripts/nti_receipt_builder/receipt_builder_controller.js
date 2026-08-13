@@ -233,17 +233,32 @@ export default class extends Controller {
   // Settings panel reactivity
 
   settingsChanged() {
-    if (!this.hasNrbCanvasOutlet) return
-    const canvas = this.nrbCanvasOutlet
+    const canvas = this.hasNrbCanvasOutlet ? this.nrbCanvasOutlet : null
 
-    if (this.hasWidthInputTarget) {
-      const value = parseFloat(this.widthInputTarget.value)
-      if (!Number.isNaN(value)) canvas.widthMmValue = value
+    const widthInput = this.hasWidthInputTarget ? parseFloat(this.widthInputTarget.value) : NaN
+    const heightInput = this.hasHeightInputTarget ? parseFloat(this.heightInputTarget.value) : NaN
+    const orientation = this.hasOrientationSelectTarget ? this.orientationSelectTarget.value : "portrait"
+
+    let widthValue = widthInput
+    let heightValue = heightInput
+
+    if (!Number.isNaN(widthValue) && !Number.isNaN(heightValue)) {
+      if (orientation === "landscape") {
+        widthValue = Math.max(widthInput, heightInput)
+        heightValue = Math.min(widthInput, heightInput)
+      } else {
+        widthValue = Math.min(widthInput, heightInput)
+        heightValue = Math.max(widthInput, heightInput)
+      }
     }
-    if (this.hasHeightInputTarget) {
-      const value = parseFloat(this.heightInputTarget.value)
-      if (!Number.isNaN(value)) canvas.heightMmValue = value
-    }
+
+    if (this.hasWidthInputTarget && !Number.isNaN(widthValue)) this.widthInputTarget.value = String(widthValue)
+    if (this.hasHeightInputTarget && !Number.isNaN(heightValue)) this.heightInputTarget.value = String(heightValue)
+
+    if (!canvas) return
+
+    if (this.hasWidthInputTarget && !Number.isNaN(widthValue)) canvas.widthMmValue = widthValue
+    if (this.hasHeightInputTarget && !Number.isNaN(heightValue)) canvas.heightMmValue = heightValue
     if (this.hasHeightModeSelectTarget) canvas.heightModeValue = this.heightModeSelectTarget.value
     if (this.hasMarginTopInputTarget) canvas.marginTopMmValue = parseFloat(this.marginTopInputTarget.value) || 0
     if (this.hasMarginRightInputTarget) canvas.marginRightMmValue = parseFloat(this.marginRightInputTarget.value) || 0
