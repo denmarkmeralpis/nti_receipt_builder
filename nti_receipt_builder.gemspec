@@ -14,7 +14,7 @@ Gem::Specification.new do |spec|
                      'views — as a Rails engine. Host applications declare a Variables subclass ' \
                      'that maps receipt placeholders to methods on their own receipt object, so ' \
                      'the gem carries no domain vocabulary of its own.'
-  spec.homepage = 'https://github.com/nueca-tech/nti_receipt_builder'
+  spec.homepage = 'https://github.com/denmarkmeralpis/nti_receipt_builder'
   spec.license = 'MIT'
   spec.required_ruby_version = '>= 3.4.0'
 
