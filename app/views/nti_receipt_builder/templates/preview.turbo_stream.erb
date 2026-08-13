@@ -1,0 +1,22 @@
+<%= turbo_stream.open_modal size: 'modal-xl' do %>
+  <div class="modal-header">
+    <h1 class="modal-title">Preview</h1>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+  </div>
+
+  <div class="modal-body nrb-receipt-preview-modal">
+    <% if @render_result.overflow? %>
+      <%= render 'nti_receipt_builder/render/overflow_banner' %>
+    <% end %>
+
+    <div class="nrb-receipt-preview-frame">
+      <%= render 'nti_receipt_builder/render/paper',
+          receipt_template: @receipt_template,
+          render_result: @render_result %>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+  </div>
+<% end %>
