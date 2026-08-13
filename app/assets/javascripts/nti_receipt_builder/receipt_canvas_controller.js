@@ -2,6 +2,9 @@ import { Controller } from "@hotwired/stimulus"
 
 const PX_PER_MM_AT_100 = 96 / 25.4
 const MIN_ELEMENT_DIMENSION_MM = 1.0
+const MIN_ZOOM = 0.5
+const MAX_ZOOM = 2.0
+const ZOOM_STEP = 0.1
 // Keep in sync with NtiReceiptBuilder::Presenters::Collection.
 const MM_PER_PT = 0.3528
 const LINE_HEIGHT_FACTOR = 1.25
@@ -99,11 +102,25 @@ export default class extends Controller {
   }
 
   zoomChanged(event) {
-    this.zoomValue = parseFloat(event.target.value)
+    this.setZoom(parseFloat(event.target.value))
+  }
+
+  zoomIn() {
+    this.setZoom(this.zoomValue + ZOOM_STEP)
+  }
+
+  zoomOut() {
+    this.setZoom(this.zoomValue - ZOOM_STEP)
+  }
+
+  setZoom(value) {
+    const nextValue = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, value))
+    this.zoomValue = Number(nextValue.toFixed(1))
   }
 
   zoomValueChanged(value) {
     if (this.hasZoomLabelTarget) this.zoomLabelTarget.textContent = `${Math.round(value * 100)}%`
+    if (this.hasZoomRangeTarget) this.zoomRangeTarget.value = String(value)
     this.applyZoom()
   }
 
