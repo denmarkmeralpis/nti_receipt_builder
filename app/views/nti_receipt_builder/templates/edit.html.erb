@@ -29,7 +29,7 @@
       <%= f.button 'Draft Preview', type: 'submit', class: 'btn btn-outline-secondary',
           formaction: url_for(action: :render_preview, id: @receipt_template.id), formmethod: :post %>
       <%= link_to url_for(action: :preview, id: @receipt_template.id),
-          class: 'btn btn-outline-secondary', data: { turbo_stream: true, turbo_method: :post } do %>
+          class: 'btn btn-outline-secondary', data: { turbo_stream: true, turbo_method: :get } do %>
         <span class="material-symbols-outlined pe-1">visibility</span>Saved Preview
       <% end %>
       <%= link_to 'Back to Templates', url_for(action: :index), class: 'btn btn-secondary' %>
