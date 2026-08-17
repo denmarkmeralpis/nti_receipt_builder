@@ -52,6 +52,7 @@ export default class extends Controller {
     event.stopPropagation()
 
     this.dragOrigin = { clientX: event.clientX, clientY: event.clientY, xMm: this.xMmValue, yMm: this.yMmValue }
+    this.dragged = false
     this.element.setPointerCapture(event.pointerId)
     this.boundDragMove = this.dragMove.bind(this)
     this.boundDragEnd = this.dragEnd.bind(this)
@@ -59,11 +60,15 @@ export default class extends Controller {
     this.element.addEventListener("pointerup", this.boundDragEnd)
     this.element.addEventListener("pointercancel", this.boundDragEnd)
     this.element.classList.add("nrb-receipt-element-dragging")
-    this.dispatchSelected()
   }
 
   dragMove(event) {
     if (!this.dragOrigin || !this.hasNrbCanvasOutlet) return
+
+    if (!this.dragged && Math.hypot(event.clientX - this.dragOrigin.clientX, event.clientY - this.dragOrigin.clientY) >= 3) {
+      this.dragged = true
+      this.dispatchSelected("drag")
+    }
 
     const canvas = this.nrbCanvasOutlet
     const deltaXMm = canvas.toMm(event.clientX - this.dragOrigin.clientX)
@@ -80,9 +85,12 @@ export default class extends Controller {
   dragEnd(event) {
     if (!this.dragOrigin) return
 
+    const wasDragged = this.dragged
     this.element.releasePointerCapture(event.pointerId)
     const detail = { id: this.elementIdValue, xMm: this.xMmValue, yMm: this.yMmValue }
     this.teardownDrag()
+
+    this.dispatchSelected(wasDragged ? "drag" : "click")
 
     this.dispatch("moved", { prefix: "receipt-element", bubbles: true, detail })
   }
@@ -107,7 +115,7 @@ export default class extends Controller {
     this.resizeHandleTarget.addEventListener("pointerup", this.boundResizeEnd)
     this.resizeHandleTarget.addEventListener("pointercancel", this.boundResizeEnd)
     this.element.classList.add("nrb-receipt-element-resizing")
-    this.dispatchSelected()
+    this.dispatchSelected("resize")
   }
 
   resizeMove(event) {
@@ -141,8 +149,8 @@ export default class extends Controller {
     this.dispatch("resized", { prefix: "receipt-element", bubbles: true, detail })
   }
 
-  dispatchSelected() {
-    this.dispatch("selected", { prefix: "receipt-element", bubbles: true, detail: { id: this.elementIdValue } })
+  dispatchSelected(interaction = "click") {
+    this.dispatch("selected", { prefix: "receipt-element", bubbles: true, detail: { id: this.elementIdValue, interaction } })
   }
 
   applyPosition() {

@@ -31,7 +31,14 @@ export default class extends Controller {
   initialize() {
     this.selectedId = null
     this.paletteDragHandler = null
+    this.panelTransitionTimer = null
   }
+
+  connect() {
+    this.syncCanvasPanelState()
+    this.syncPanelToggleButtons()
+  }
+
 
   // Stimulus calls this on connect and after every assignment to layoutValue — adding, patching,
   // moving, resizing and deleting all route through one of those, so the hidden field is never
@@ -48,6 +55,7 @@ export default class extends Controller {
 
   disconnect() {
     this.cancelPaletteDrag()
+    window.clearTimeout(this.panelTransitionTimer)
   }
 
   nrbCanvasOutletConnected() {
@@ -166,14 +174,17 @@ export default class extends Controller {
   // Selection
 
   elementSelected(event) {
-    this.selectElement(event.detail.id)
+    const isManipulating = ["drag", "resize"].includes(event.detail.interaction)
+    this.selectElement(event.detail.id, { openProperties: !isManipulating })
+    if (isManipulating) this.closePropertiesPanel()
   }
 
   deselect() {
     this.selectElement(null)
   }
 
-  selectElement(id) {
+  selectElement(id, { openProperties = true } = {}) {
+    if (id && openProperties) this.openPropertiesPanel()
     if (id === this.selectedId) return
 
     this.selectedId = id
@@ -308,5 +319,94 @@ export default class extends Controller {
     if (!this.hasLayoutFieldTarget) return
 
     event.formData.set(this.layoutFieldTarget.name, JSON.stringify(this.layoutValue))
+  }
+
+  // Panel toggles: show/hide overlay panels above the canvas. Panels have ids so
+  // the topbar buttons can toggle them without restructuring the DOM.
+  togglePanelById(id) {
+    const el = document.getElementById(id)
+    if (!el) return
+    el.classList.toggle('open')
+    this.syncCanvasPanelState()
+    this.syncPanelToggleButtons()
+  }
+
+  openPropertiesPanel() {
+    const panel = document.getElementById('receipt-properties-panel')
+    if (!panel || panel.classList.contains('open')) return
+
+    panel.classList.add('open')
+    this.syncCanvasPanelState()
+    this.syncPanelToggleButtons()
+  }
+
+  closePanel(event) {
+    this.closePanelById(event.params.panelId)
+  }
+
+  closePropertiesPanel() {
+    this.closePanelById('receipt-properties-panel')
+  }
+
+  closePanelById(id) {
+    const panel = document.getElementById(id)
+    if (!panel) return
+    if (!panel.classList.contains('open')) return
+
+    panel.classList.remove('open')
+    this.syncCanvasPanelState()
+    this.syncPanelToggleButtons()
+
+    // Keep the opener hidden until the outgoing panel has cleared its edge.
+    // Otherwise both controls are visible for a frame, which reads as a jump.
+    const viewport = this.element.querySelector('.nrb-receipt-viewport')
+    if (!viewport) return
+
+    viewport.classList.add('nrb-panel-transitioning')
+    window.clearTimeout(this.panelTransitionTimer)
+    this.panelTransitionTimer = window.setTimeout(() => {
+      viewport.classList.remove('nrb-panel-transitioning')
+    }, 260)
+  }
+
+  syncCanvasPanelState() {
+    const viewport = this.element.querySelector('.nrb-receipt-viewport')
+    if (!viewport) return
+
+    const elementsOpen = document.getElementById('receipt-elements-panel')?.classList.contains('open') || false
+    const settingsOpen = document.getElementById('receipt-settings-panel')?.classList.contains('open') || false
+    const propertiesOpen = document.getElementById('receipt-properties-panel')?.classList.contains('open') || false
+
+    viewport.classList.toggle('nrb-left-panel-open', elementsOpen || settingsOpen)
+    viewport.classList.toggle('nrb-right-panel-open', propertiesOpen)
+  }
+
+  syncPanelToggleButtons() {
+    this.element.querySelectorAll('[data-panel-id]').forEach((button) => {
+      const panel = document.getElementById(button.dataset.panelId)
+      const isOpen = panel?.classList.contains('open') || false
+
+      button.classList.toggle('is-open', isOpen)
+      button.setAttribute('aria-expanded', isOpen)
+    })
+  }
+
+  toggleElements() {
+    this.togglePanelById('receipt-elements-panel')
+    document.getElementById('receipt-settings-panel')?.classList.remove('open')
+    this.syncCanvasPanelState()
+    this.syncPanelToggleButtons()
+  }
+
+  toggleSettings() {
+    this.togglePanelById('receipt-settings-panel')
+    document.getElementById('receipt-elements-panel')?.classList.remove('open')
+    this.syncCanvasPanelState()
+    this.syncPanelToggleButtons()
+  }
+
+  toggleProperties() {
+    this.togglePanelById('receipt-properties-panel')
+    this.syncPanelToggleButtons()
   }
 }
