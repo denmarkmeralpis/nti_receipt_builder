@@ -1,6 +1,11 @@
-<div id="receipt-properties-panel" class="nrb-receipt-panel nrb-receipt-panel--properties"
+<div id="receipt-properties-panel" class="nrb-receipt-panel nrb-receipt-panel--properties overlay"
     data-controller="nrb-properties"
     data-nrb-properties-scalar-variables-value="<%= NtiReceiptBuilder.variables_class.scalar_keys.index_with { |key| NtiReceiptBuilder.variables_class.labels[key] }.to_json %>">
+  <button type="button" class="nrb-panel-collapse" aria-label="Collapse properties panel"
+      data-nrb-builder-panel-id-param="receipt-properties-panel"
+      data-action="click->nrb-builder#closePanel">
+    <span aria-hidden="true">›</span>
+  </button>
   <h3 class="card-title">Properties</h3>
   <div data-nrb-properties-target="content">
     <p class="text-secondary nrb-receipt-hint">Select an element on the canvas to edit its properties.</p>

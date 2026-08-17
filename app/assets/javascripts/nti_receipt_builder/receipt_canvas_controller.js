@@ -98,6 +98,7 @@ export default class extends Controller {
   }
 
   paperClicked() {
+    if (event.target.closest(".nrb-receipt-panel--properties")) return
     this.dispatch("deselect", { prefix: "receipt-canvas", bubbles: true })
   }
 
